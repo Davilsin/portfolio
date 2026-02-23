@@ -24,12 +24,40 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // 2. MOBILE MENU FUNCTIONALITY
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
+let menuBackdrop = null;
+
+// Create backdrop element
+function createMenuBackdrop() {
+    if (!menuBackdrop) {
+        menuBackdrop = document.createElement('div');
+        menuBackdrop.className = 'menu-backdrop';
+        document.body.appendChild(menuBackdrop);
+        
+        // Close menu when clicking backdrop
+        menuBackdrop.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+}
 
 if (hamburger && navMenu) {
+    createMenuBackdrop();
+    
     hamburger.addEventListener('click', (e) => {
         e.stopPropagation();
-        navMenu.classList.toggle('active');
+        const isActive = navMenu.classList.toggle('active');
         hamburger.classList.toggle('active');
+        
+        if (isActive) {
+            menuBackdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     });
     
     // Close menu when clicking on a link
@@ -37,14 +65,20 @@ if (hamburger && navMenu) {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
             hamburger.classList.remove('active');
+            menuBackdrop.classList.remove('active');
+            document.body.style.overflow = '';
         });
     });
     
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.nav-wrapper')) {
+        if (!e.target.closest('.nav-wrapper') && !e.target.closest('.nav-menu')) {
             navMenu.classList.remove('active');
             hamburger.classList.remove('active');
+            if (menuBackdrop) {
+                menuBackdrop.classList.remove('active');
+            }
+            document.body.style.overflow = '';
         }
     });
 }
