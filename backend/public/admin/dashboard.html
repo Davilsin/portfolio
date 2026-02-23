@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info span {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.8rem;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background: #f5f7fa;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+
+        .sidebar-item.active {
+            background: #f0f4ff;
+            border-left-color: #667eea;
+            color: #667eea;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 2rem;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        th {
+            background: #f5f7fa;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #fafbfc;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .add-section {
+            margin-bottom: 2rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .message.success {
+            background: #efe;
+            color: #3c3;
+            border-left-color: #3c3;
+        }
+
+        .message.error {
+            background: #fee;
+            color: #c33;
+            border-left-color: #c33;
+        }
+
+        .message.info {
+            background: #eef;
+            color: #33c;
+            border-left-color: #33c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .status-badge.published {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-badge.draft {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .star-rating {
+            font-size: 1.2rem;
+            letter-spacing: 0.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .sidebar-item {
+                flex-shrink: 0;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar-item.active {
+                border-left: none;
+                border-bottom-color: #667eea;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Admin Dashboard</h1>
+        <div class="user-info">
+            <span id="username">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-item active" onclick="switchSection('dashboard', this)">📈 Dashboard</div>
+            <div class="sidebar-item" onclick="switchSection('projects', this)">🚀 Projects</div>
+            <div class="sidebar-item" onclick="switchSection('services', this)">⚙️ Services</div>
+            <div class="sidebar-item" onclick="switchSection('testimonials', this)">⭐ Testimonials</div>
+            <div class="sidebar-item" onclick="switchSection('contacts', this)">📧 Contacts</div>
+            <div class="sidebar-item" onclick="switchSection('settings', this)">⚡ Settings</div>
+        </div>
+
+        <div class="main-content">
+            <div id="message"></div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2>📈 Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Projects</h3>
+                        <div class="number" id="projectCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Services</h3>
+                        <div class="number" id="serviceCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Testimonials</h3>
+                        <div class="number" id="testimonialCount">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>New Contacts</h3>
+                        <div class="number" id="contactCount">-</div>
+                    </div>
+                </div>
+
+                <h2>📊 Recent Activity</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityList">
+                            <tr><td colspan="4" class="empty-state">Loading activity...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div id="projects" class="section">
+                <h2>🚀 Projects Management</h2>
+                <div class="add-section">
+                    <button class="btn btn-primary" onclick="openProjectModal()">+ Add New Project</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectsList">
+                            <tr><td colspan="5" class="loading">Loading projects...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div id="services" class="section">
+                <h2>⚙️ Services Management</h2>
+                <div class="add-section">
+                    <button class="btn btn-primary" onclick="openServiceModal()">+ Add New Service</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesList">
+                            <tr><td colspan="5" class="loading">Loading services...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Testimonials Section -->
+            <div id="testimonials" class="section">
+                <h2>⭐ Testimonials Management</h2>
+                <div class="add-section">
+                    <button class="btn btn-primary" onclick="openTestimonialModal()">+ Add New Testimonial</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Company</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="testimonialsList">
+                            <tr><td colspan="5" class="loading">Loading testimonials...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contacts Section -->
+            <div id="contacts" class="section">
+                <h2>📧 Contact Messages</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsList">
+                            <tr><td colspan="6" class="loading">Loading contacts...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section">
+                <h2>⚡ Settings</h2>
+                <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                    <div class="form-group">
+                        <label>Admin Username</label>
+                        <input type="text" id="adminUsername" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Change Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <button class="btn btn-primary" onclick="updatePassword()">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="projectModalTitle">Add New Project</h3>
+                <button class="close-btn" onclick="closeProjectModal()">&times;</button>
+            </div>
+            <form id="projectForm">
+                <input type="hidden" id="projectId">
+                <div class="form-group">
+                    <label>Project Title *</label>
+                    <input type="text" id="projectTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="projectCategory">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="projectDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="projectImage">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="projectStatus">
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success">Save Project</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="serviceModalTitle">Add New Service</h3>
+                <button class="close-btn" onclick="closeServiceModal()">&times;</button>
+            </div>
+            <form id="serviceForm">
+                <input type="hidden" id="serviceId">
+                <div class="form-group">
+                    <label>Service Title *</label>
+                    <input type="text" id="serviceTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Service Icon (emoji)</label>
+                    <input type="text" id="serviceIcon" placeholder="e.g., 🎨">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="serviceDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="serviceStatus">
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success">Save Service</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Testimonial Modal -->
+    <div id="testimonialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="testimonialModalTitle">Add New Testimonial</h3>
+                <button class="close-btn" onclick="closeTestimonialModal()">&times;</button>
+            </div>
+            <form id="testimonialForm">
+                <input type="hidden" id="testimonialId">
+                <div class="form-group">
+                    <label>Client Name *</label>
+                    <input type="text" id="testimonialClientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="testimonialCompany">
+                </div>
+                <div class="form-group">
+                    <label>Testimonial Text *</label>
+                    <textarea id="testimonialText" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Rating (1-5)</label>
+                    <select id="testimonialRating">
+                        <option value="5">⭐⭐⭐⭐⭐ (5 stars)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 stars)</option>
+                        <option value="3">⭐⭐⭐ (3 stars)</option>
+                        <option value="2">⭐⭐ (2 stars)</option>
+                        <option value="1">⭐ (1 star)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="testimonialStatus">
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success">Save Testimonial</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeTestimonialModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api';
+
+        function showMessage(text, type = 'info') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function switchSection(sectionName, elem) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionName).classList.add('active');
+            if (elem) elem.classList.add('active');
+
+            if (sectionName === 'dashboard') loadDashboard();
+            if (sectionName === 'projects') loadProjects();
+            if (sectionName === 'services') loadServices();
+            if (sectionName === 'testimonials') loadTestimonials();
+            if (sectionName === 'contacts') loadContacts();
+            if (sectionName === 'settings') loadSettings();
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_URL}/auth/check`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (!data.authenticated) {
+                    window.location.href = '/admin';
+                    return false;
+                }
+
+                document.getElementById('username').textContent = `${data.admin.username} (${data.admin.role})`;
+                return true;
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.href = '/admin';
+                return false;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const stats = await fetch(`${API_URL}/admin/stats`, {
+                    credentials: 'include'
+                }).then(r => r.json());
+
+                document.getElementById('projectCount').textContent = stats.projects?.total || 0;
+                document.getElementById('serviceCount').textContent = stats.services?.total || 0;
+                document.getElementById('testimonialCount').textContent = stats.testimonials?.total || 0;
+                document.getElementById('contactCount').textContent = stats.contacts?.new || 0;
+
+                const projects = await fetch(`${API_URL}/projects`, { credentials: 'include' }).then(r => r.json());
+                const services = await fetch(`${API_URL}/services`, { credentials: 'include' }).then(r => r.json());
+                const testimonials = await fetch(`${API_URL}/testimonials`, { credentials: 'include' }).then(r => r.json());
+                const contacts = await fetch(`${API_URL}/contact`, { credentials: 'include' }).then(r => r.json());
+
+                const allItems = [
+                    ...projects.map(p => ({type: 'Project', title: p.title, date: p.createdAt, status: p.status})),
+                    ...services.map(s => ({type: 'Service', title: s.title, date: s.createdAt, status: s.status})),
+                    ...testimonials.map(t => ({type: 'Testimonial', title: t.clientName, date: t.createdAt, status: t.status})),
+                    ...contacts.map(c => ({type: 'Contact', title: c.name, date: c.createdAt, status: c.status}))
+                ];
+
+                const sorted = allItems.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+
+                document.getElementById('activityList').innerHTML = sorted.map(item => `
+                    <tr>
+                        <td>${item.type}</td>
+                        <td>${item.title}</td>
+                        <td>${new Date(item.date).toLocaleDateString()}</td>
+                        <td><span class="status-badge ${item.status}">${item.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showMessage(`Error loading dashboard: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadProjects() {
+            try {
+                const projects = await fetch(`${API_URL}/projects`, { credentials: 'include' }).then(r => r.json());
+
+                document.getElementById('projectsList').innerHTML = projects.map(p => `
+                    <tr>
+                        <td><strong>${p.title}</strong></td>
+                        <td>${p.category || '-'}</td>
+                        <td><span class="status-badge ${p.status}">${p.status}</span></td>
+                        <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-small" onclick="editProject('${p._id}')">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteProject('${p._id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="empty-state">No projects found. Create one to get started!</td></tr>';
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                showMessage(`Error loading projects: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadServices() {
+            try {
+                const services = await fetch(`${API_URL}/services`, { credentials: 'include' }).then(r => r.json());
+
+                document.getElementById('servicesList').innerHTML = services.map(s => `
+                    <tr>
+                        <td>${s.icon || '⚙️'}</td>
+                        <td><strong>${s.title}</strong></td>
+                        <td><span class="status-badge ${s.status}">${s.status}</span></td>
+                        <td>${new Date(s.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-small" onclick="editService('${s._id}')">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteService('${s._id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="empty-state">No services found. Create one to get started!</td></tr>';
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showMessage(`Error loading services: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadTestimonials() {
+            try {
+                const testimonials = await fetch(`${API_URL}/testimonials`, { credentials: 'include' }).then(r => r.json());
+
+                document.getElementById('testimonialsList').innerHTML = testimonials.map(t => `
+                    <tr>
+                        <td><strong>${t.clientName}</strong></td>
+                        <td>${t.clientCompany || '-'}</td>
+                        <td><span class="star-rating">${'⭐'.repeat(t.rating)}</span></td>
+                        <td><span class="status-badge ${t.status}">${t.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-small" onclick="editTestimonial('${t._id}')">Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteTestimonial('${t._id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="5" class="empty-state">No testimonials found. Create one to get started!</td></tr>';
+            } catch (error) {
+                console.error('Error loading testimonials:', error);
+                showMessage(`Error loading testimonials: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadContacts() {
+            try {
+                const contacts = await fetch(`${API_URL}/contact`, { credentials: 'include' }).then(r => r.json());
+
+                document.getElementById('contactsList').innerHTML = contacts.map(c => `
+                    <tr>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.email}</td>
+                        <td>${c.service || '-'}</td>
+                        <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+                        <td><span class="status-badge ${c.status}">${c.status || 'new'}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-small" onclick="viewContact('${c._id}')">View</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteContact('${c._id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="6" class="empty-state">No contact messages yet.</td></tr>';
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+                showMessage(`Error loading contacts: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                const auth = await fetch(`${API_URL}/auth/check`, { credentials: 'include' }).then(r => r.json());
+                document.getElementById('adminUsername').value = auth.admin.username;
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Project modals
+        function openProjectModal() {
+            document.getElementById('projectId').value = '';
+            document.getElementById('projectForm').reset();
+            document.getElementById('projectModalTitle').textContent = 'Add New Project';
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+        }
+
+        async function editProject(id) {
+            try {
+                const project = await fetch(`${API_URL}/projects/${id}`, { credentials: 'include' }).then(r => r.json());
+                document.getElementById('projectId').value = project._id;
+                document.getElementById('projectTitle').value = project.title;
+                document.getElementById('projectCategory').value = project.category || '';
+                document.getElementById('projectDescription').value = project.description || '';
+                document.getElementById('projectImage').value = project.image || '';
+                document.getElementById('projectStatus').value = project.status || 'draft';
+                document.getElementById('projectModalTitle').textContent = 'Edit Project';
+                document.getElementById('projectModal').classList.add('active');
+            } catch (error) {
+                showMessage(`Error loading project: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Are you sure you want to delete this project?')) return;
+            try {
+                const response = await fetch(`${API_URL}/projects/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    showMessage('✅ Project deleted successfully!', 'success');
+                    loadProjects();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('projectId').value;
+            const data = {
+                title: document.getElementById('projectTitle').value,
+                category: document.getElementById('projectCategory').value,
+                description: document.getElementById('projectDescription').value,
+                image: document.getElementById('projectImage').value,
+                status: document.getElementById('projectStatus').value
+            };
+
+            try {
+                const url = id ? `${API_URL}/projects/${id}` : `${API_URL}/projects`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showMessage(`✅ Project ${id ? 'updated' : 'created'} successfully!`, 'success');
+                    closeProjectModal();
+                    loadProjects();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Service modals
+        function openServiceModal() {
+            document.getElementById('serviceId').value = '';
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceModalTitle').textContent = 'Add New Service';
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        async function editService(id) {
+            try {
+                const service = await fetch(`${API_URL}/services/${id}`, { credentials: 'include' }).then(r => r.json());
+                document.getElementById('serviceId').value = service._id;
+                document.getElementById('serviceTitle').value = service.title;
+                document.getElementById('serviceIcon').value = service.icon || '';
+                document.getElementById('serviceDescription').value = service.description || '';
+                document.getElementById('serviceStatus').value = service.status || 'draft';
+                document.getElementById('serviceModalTitle').textContent = 'Edit Service';
+                document.getElementById('serviceModal').classList.add('active');
+            } catch (error) {
+                showMessage(`Error loading service: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteService(id) {
+            if (!confirm('Are you sure you want to delete this service?')) return;
+            try {
+                const response = await fetch(`${API_URL}/services/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    showMessage('✅ Service deleted successfully!', 'success');
+                    loadServices();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('serviceId').value;
+            const data = {
+                title: document.getElementById('serviceTitle').value,
+                icon: document.getElementById('serviceIcon').value,
+                description: document.getElementById('serviceDescription').value,
+                status: document.getElementById('serviceStatus').value
+            };
+
+            try {
+                const url = id ? `${API_URL}/services/${id}` : `${API_URL}/services`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showMessage(`✅ Service ${id ? 'updated' : 'created'} successfully!`, 'success');
+                    closeServiceModal();
+                    loadServices();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Testimonial modals
+        function openTestimonialModal() {
+            document.getElementById('testimonialId').value = '';
+            document.getElementById('testimonialForm').reset();
+            document.getElementById('testimonialModalTitle').textContent = 'Add New Testimonial';
+            document.getElementById('testimonialModal').classList.add('active');
+        }
+
+        function closeTestimonialModal() {
+            document.getElementById('testimonialModal').classList.remove('active');
+        }
+
+        async function editTestimonial(id) {
+            try {
+                const testimonial = await fetch(`${API_URL}/testimonials/${id}`, { credentials: 'include' }).then(r => r.json());
+                document.getElementById('testimonialId').value = testimonial._id;
+                document.getElementById('testimonialClientName').value = testimonial.clientName;
+                document.getElementById('testimonialCompany').value = testimonial.clientCompany || '';
+                document.getElementById('testimonialText').value = testimonial.text;
+                document.getElementById('testimonialRating').value = testimonial.rating;
+                document.getElementById('testimonialStatus').value = testimonial.status || 'draft';
+                document.getElementById('testimonialModalTitle').textContent = 'Edit Testimonial';
+                document.getElementById('testimonialModal').classList.add('active');
+            } catch (error) {
+                showMessage(`Error loading testimonial: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteTestimonial(id) {
+            if (!confirm('Are you sure you want to delete this testimonial?')) return;
+            try {
+                const response = await fetch(`${API_URL}/testimonials/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    showMessage('✅ Testimonial deleted successfully!', 'success');
+                    loadTestimonials();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function viewContact(id) {
+            try {
+                const contact = await fetch(`${API_URL}/contact/${id}`, { credentials: 'include' }).then(r => r.json());
+                alert(`Contact from ${contact.name}\n\nEmail: ${contact.email}\nService: ${contact.service || 'Not specified'}\n\nMessage:\n${contact.message}`);
+            } catch (error) {
+                showMessage(`Error loading contact: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteContact(id) {
+            if (!confirm('Are you sure you want to delete this contact message?')) return;
+            try {
+                const response = await fetch(`${API_URL}/contact/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    showMessage('✅ Contact deleted successfully!', 'success');
+                    loadContacts();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('testimonialForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('testimonialId').value;
+            const data = {
+                clientName: document.getElementById('testimonialClientName').value,
+                clientCompany: document.getElementById('testimonialCompany').value,
+                text: document.getElementById('testimonialText').value,
+                rating: parseInt(document.getElementById('testimonialRating').value),
+                status: document.getElementById('testimonialStatus').value
+            };
+
+            try {
+                const url = id ? `${API_URL}/testimonials/${id}` : `${API_URL}/testimonials`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showMessage(`✅ Testimonial ${id ? 'updated' : 'created'} successfully!`, 'success');
+                    closeTestimonialModal();
+                    loadTestimonials();
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        });
+
+        async function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            if (!newPassword) {
+                showMessage('Please enter a new password', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/update-password`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify({password: newPassword})
+                });
+
+                if (response.ok) {
+                    showMessage('✅ Password updated successfully!', 'success');
+                    document.getElementById('newPassword').value = '';
+                }
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch(`${API_URL}/auth/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = '/admin';
+            } catch (error) {
+                showMessage(`Error logging out: ${error.message}`, 'error');
+            }
+        }
+
+        window.addEventListener('load', async () => {
+            if (await checkAuth()) {
+                loadDashboard();
+            }
+        });
+    </script>
+</body>
+</html>

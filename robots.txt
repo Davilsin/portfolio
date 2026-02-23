@@ -1,0 +1,35 @@
+# Portfolio Website Robots.txt
+# Guides search engine crawlers on how to access and index the site
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+
+# Block admin pages from being indexed
+Disallow: /admin/
+Disallow: /backend/
+
+# Allow specific file types
+Allow: *.css
+Allow: *.js
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.png
+Allow: *.gif
+Allow: *.svg
+
+# Crawl delay to prevent server overload (in seconds)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: http://localhost:8000/sitemap.xml
+
+# Google Search Console
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing Search
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
