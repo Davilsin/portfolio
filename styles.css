@@ -1053,10 +1053,13 @@ section h2 {
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
 }
 
 .contact-item a:hover {
     color: #764ba2;
+    text-decoration: underline;
 }
 
 .social-links {
@@ -1248,10 +1251,12 @@ section h2 {
     text-decoration: none;
     transition: var(--transition-fast);
     opacity: 0.8;
+    cursor: pointer;
 }
 
 .footer-contact a:hover {
     opacity: 1;
+    text-decoration: underline;
 }
 
 .social-links {
