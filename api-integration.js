@@ -5,7 +5,7 @@
  * Include this file in your HTML pages that need API integration.
  */
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://portfolio-28wj.onrender.com/api';
 
 // ============================================
 // PROJECTS API
@@ -253,3 +253,4 @@ window.API = {
     fetchTestimonials,
     submitContactForm
 };
+
