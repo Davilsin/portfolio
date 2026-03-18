@@ -87,32 +87,21 @@ if (hamburger && navMenu) {
 const contactForm = document.querySelector('.contact-form');
 
 async function submitContactLead(formData) {
-    const endpoints = ['/api/contact', 'http://localhost:3001/api/contact'];
-    let lastError;
+    const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    });
 
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+    const result = await response.json().catch(() => ({}));
 
-            const result = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-                throw new Error(result.error || result.message || `Request failed (${response.status})`);
-            }
-
-            return result;
-        } catch (error) {
-            lastError = error;
-        }
+    if (!response.ok) {
+        throw new Error(result.error || result.message || `Request failed (${response.status})`);
     }
 
-    throw lastError || new Error('Unable to submit contact form right now.');
+    return result;
 }
 
 if (contactForm) {

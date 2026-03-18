@@ -1,5 +1,5 @@
 // API Base URL
-const API_URL = 'http://localhost:3001/api';
+const API_URL = '/api';
 
 // Check Authentication on Page Load
 document.addEventListener('DOMContentLoaded', () => {
